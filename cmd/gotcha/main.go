@@ -13,7 +13,7 @@ import (
 
 // version and cmd name
 const (
-	Version = "0.3.0dev"
+	Version = "0.3.1dev"
 	Name    = "gotcha"
 )
 
@@ -184,7 +184,6 @@ func run(w, errw io.Writer, opt *option) (exitCode int) {
 		g.Log.SetOutput(ioutil.Discard)
 	}
 
-	/// TODO: case opt.root == ToFilePath:
 	info, err := os.Stat(opt.root)
 	if err != nil {
 		fmt.Fprintln(errw, err)
@@ -228,8 +227,12 @@ func run(w, errw io.Writer, opt *option) (exitCode int) {
 func main() {
 	flag.Parse()
 	if flag.NArg() != 0 {
-		if flag.NArg() == 1 && opt.root == "" {
-			opt.root = flag.Arg(0)
+		if opt.root == "" {
+			if flag.NArg() == 1 {
+				opt.root = flag.Arg(0)
+			} else {
+				opt.root = "."
+			}
 		} else {
 			fmt.Fprintln(os.Stderr, "unknown arguments: ", flag.Args())
 			os.Exit(ErrInitialize)
