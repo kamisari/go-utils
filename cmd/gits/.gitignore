@@ -1,0 +1,7 @@
+gits
+
+*.prof
+*.json
+
+t/*
+!t/.gitignore
