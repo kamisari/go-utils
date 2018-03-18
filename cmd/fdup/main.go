@@ -18,7 +18,7 @@ import (
 // base information
 const (
 	Name                 = "fdup"
-	Version              = "5.0.0dev"
+	Version              = "0.1.0"
 	DefaultHashAlgorithm = "sha512_256"
 )
 
