@@ -14,7 +14,7 @@ import (
 
 const (
 	name    = "gits"
-	version = "0.4.0dev"
+	version = "0.4.1dev"
 )
 
 // Default values
@@ -209,7 +209,7 @@ func main() {
 		}
 		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.Path())
 	case opt.dir != "":
-		validateArgs(1)
+		validateArgs(0)
 		if repo, ok := gits.Repositories[opt.dir]; ok {
 			fmt.Fprintf(os.Stdout, "%s\n", repo.WorkTree)
 		} else {
