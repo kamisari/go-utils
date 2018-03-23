@@ -14,7 +14,7 @@ import (
 
 const (
 	name    = "gits"
-	version = "0.3.0dev"
+	version = "0.4.0dev"
 )
 
 // Default values
@@ -44,6 +44,7 @@ type option struct {
 	add   string
 	rm    string
 	prune bool
+	dir   string
 
 	list           bool
 	listRepo       bool
@@ -69,6 +70,7 @@ func init() {
 	flag.StringVar(&opt.add, "add", "", "specify path to directory for add to configuration files")
 	flag.StringVar(&opt.rm, "rm", "", "specify key to remove from configuration file")
 	flag.BoolVar(&opt.prune, "prune", false, "prune invalid worktree from configuration file")
+	flag.StringVar(&opt.dir, "dir", "", "specify repository then to show path to worktree")
 
 	flag.BoolVar(&opt.list, "list", false, "show content of configuration file")
 	flag.BoolVar(&opt.listRepo, "list-repo", false, "list repositories")
@@ -101,8 +103,8 @@ func main() {
 	// 3. output err or valid message
 
 	// TODO: consider
-	validateArgs := func() {
-		if flag.NArg() != 0 {
+	validateArgs := func(n int) {
+		if flag.NArg() != n {
 			flag.PrintDefaults()
 			log.Fatalf("invalid arguments %v\n", flag.Args())
 		}
@@ -111,7 +113,7 @@ func main() {
 	flag.Parse()
 
 	if opt.version {
-		validateArgs()
+		validateArgs(0)
 		fmt.Fprintf(os.Stdout, "%s version %s\n", name, version)
 		return
 	}
@@ -123,14 +125,14 @@ func main() {
 		}
 	}
 	if opt.edit {
-		validateArgs()
+		validateArgs(0)
 		if err := Edit(os.Stdout, os.Stderr, os.Stdin, opt.conf); err != nil {
 			log.Fatal(err)
 		}
 		return
 	}
 	if opt.template {
-		validateArgs()
+		validateArgs(0)
 		b, err := Template()
 		if err != nil {
 			log.Fatal(err)
@@ -139,7 +141,7 @@ func main() {
 		return
 	}
 	if opt.listCandidates {
-		validateArgs()
+		validateArgs(0)
 		fmt.Fprintf(os.Stdout, "Candidates:\n[high priority]\n")
 		for i, s := range CandidateConfPaths {
 			fmt.Fprintf(os.Stdout, "\t%d. %s\n", i+1, s)
@@ -159,7 +161,7 @@ func main() {
 	}
 	switch {
 	case opt.add != "":
-		validateArgs()
+		validateArgs(0)
 		root, err := GetGitToplevel(opt.add)
 		if err != nil {
 			log.Fatal(err)
@@ -174,9 +176,9 @@ func main() {
 		if err := gits.FprintIndent(os.Stdout, "", "\t"); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.path)
+		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.Path())
 	case opt.rm != "":
-		validateArgs()
+		validateArgs(0)
 		if err := gits.RemoveRepository(opt.rm); err != nil {
 			log.Fatal(err)
 		}
@@ -187,9 +189,9 @@ func main() {
 		if err := gits.FprintIndent(os.Stdout, "", "\t"); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.path)
+		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.Path())
 	case opt.prune:
-		validateArgs()
+		validateArgs(0)
 		if removed, err := gits.Prune(); err != nil {
 			log.Fatal(err)
 		} else if len(removed) != 0 {
@@ -205,20 +207,27 @@ func main() {
 		if err := gits.FprintIndent(os.Stdout, "", "\t"); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.path)
+		fmt.Fprintf(os.Stdout, "Updated:\n\t[%s]\n", gits.Path())
+	case opt.dir != "":
+		validateArgs(1)
+		if repo, ok := gits.Repositories[opt.dir]; ok {
+			fmt.Fprintf(os.Stdout, "%s\n", repo.WorkTree)
+		} else {
+			log.Fatalf("not exists %s in %s\n", opt.dir, gits.Path())
+		}
 	case opt.list:
-		validateArgs()
+		validateArgs(0)
 		if err := gits.FprintIndent(os.Stdout, "", "\t"); err != nil {
 			log.Fatal(err)
 		}
 	case opt.listRepo:
-		validateArgs()
+		validateArgs(0)
 		gits.ListRepositories(os.Stdout)
 	case opt.listRepoFull:
-		validateArgs()
+		validateArgs(0)
 		gits.ListRepositoriesFull(os.Stdout)
 	case opt.listAlias:
-		validateArgs()
+		validateArgs(0)
 		if err := gits.ListAlias(os.Stdout, opt.exec); err != nil {
 			log.Fatal(err)
 		}

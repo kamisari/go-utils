@@ -58,6 +58,11 @@ func ReadJSON(path string) (*Gits, error) {
 	return gits, nil
 }
 
+// Path return configuration filepath
+func (gits *Gits) Path() string {
+	return gits.path
+}
+
 // FprintIndent write a json with indent to w
 func (gits *Gits) FprintIndent(w io.Writer, prefix string, indent string) error {
 	b, err := json.MarshalIndent(gits, prefix, indent)
