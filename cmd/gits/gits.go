@@ -186,7 +186,7 @@ func (gits *Gits) ListAlias(w io.Writer, exec string) error {
 	if !ok {
 		return fmt.Errorf("%s is do not allow", exec)
 	}
-	_, err := fmt.Fprintf(w, "[%s]\n", exec)
+	_, err := fmt.Fprintf(w, "exec=[%s]\n", exec)
 	for key, line := range aliasMap {
 		_, err = fmt.Fprintf(w, "\t\"%s\": %s\n", key, line)
 	}
@@ -243,11 +243,6 @@ func (gits *Gits) Run(w, errw io.Writer, r io.Reader, executable string, alias s
 	name, allowArgs := gits.ParseArgs(executable, alias)
 	if name == "" {
 		return fmt.Errorf("invalid arguments:%v %v", executable, alias)
-	}
-
-	// TODO: remove?
-	if name == "git" && len(allowArgs) == 0 {
-		return fmt.Errorf("need specify alias. see [gits -list-alias]")
 	}
 
 	fmt.Fprintf(w, "exec=[%s] args=%q\n", name, allowArgs)

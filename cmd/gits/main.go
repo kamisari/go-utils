@@ -14,7 +14,7 @@ import (
 
 const (
 	name    = "gits"
-	version = "0.5.0"
+	version = "0.5.1"
 )
 
 // Default values
@@ -234,8 +234,12 @@ func main() {
 		var alias string
 		if n := flag.NArg(); n == 1 {
 			alias = flag.Arg(0)
-		} else if n != 0 {
-			log.Fatalf("invalid arguments: %v", flag.Args())
+		} else {
+			fmt.Fprintf(os.Stderr, "invalid arguments: %v\n", flag.Args())
+			if err := gits.ListAlias(os.Stdout, opt.exec); err != nil {
+				log.Fatal(err)
+			}
+			os.Exit(1)
 		}
 		if err := gits.Run(os.Stdout, os.Stderr, os.Stdin, opt.exec, alias); err != nil {
 			log.Fatal(err)
