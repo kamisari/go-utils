@@ -6,7 +6,7 @@ cli tool for gathering of "TODO: " from files
 ## Installation:
 ----------------
 ```
-go get -v -u github.com/kamisari/go-utils/cmd/gotcha
+go get -v -u github.com/yaeshimo/go-utils/cmd/gotcha
 ```
 
 ## Example:

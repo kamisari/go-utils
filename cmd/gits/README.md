@@ -71,7 +71,7 @@ git
 Install:
 --------
 ```sh
-go get -v -u github.com/kamisari/go-utils/cmd/gits
+go get -v -u github.com/yaeshimo/go-utils/cmd/gits
 ```
 
 License:

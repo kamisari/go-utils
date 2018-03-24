@@ -30,7 +30,7 @@ fdup -verbose /path/file /path/dir
 Install:
 --------
 ```sh
-go get -v -u github.com/kamisari/go-utils/cmd/fdup
+go get -v -u github.com/yaeshimo/go-utils/cmd/fdup
 ```
 
 TODO:
