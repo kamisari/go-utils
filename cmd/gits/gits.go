@@ -188,7 +188,7 @@ func (gits *Gits) ListAlias(w io.Writer, exec string) error {
 	}
 	_, err := fmt.Fprintf(w, "[%s]\n", exec)
 	for key, line := range aliasMap {
-		_, err = fmt.Fprintf(w, "\t\"%s\": \"%s\"\n", key, line)
+		_, err = fmt.Fprintf(w, "\t\"%s\": %s\n", key, line)
 	}
 	return err
 }
@@ -200,10 +200,14 @@ func Template() ([]byte, error) {
 		Repositories:  make(map[string]Repository),
 	}
 	gits.AllowCommands["git"] = make(map[string][]string)
-	gits.AllowCommands["git"]["status"] = []string{"-c", "color.status=always", "status"}
+	gits.AllowCommands["git"]["status"] = []string{"status"}
+	gits.AllowCommands["git"]["st"] = []string{"status"}
 	gits.AllowCommands["git"]["fetch"] = []string{"fetch"}
 	gits.AllowCommands["git"]["diff"] = []string{"diff", "--stat"}
 	gits.AllowCommands["git"]["ls"] = []string{"ls-files"}
+	gits.AllowCommands["git"]["remote"] = []string{"remote", "-v"}
+	gits.AllowCommands["git"]["branch"] = []string{"branch"}
+	gits.AllowCommands["git"]["worktree"] = []string{"worktree", "list"}
 	gits.AllowCommands["ls"] = make(map[string][]string)
 	gits.AllowCommands["ls"]["la"] = []string{"-lah", "--color=auto"}
 	gits.AllowCommands["pwd"] = make(map[string][]string)
