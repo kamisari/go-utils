@@ -14,7 +14,7 @@ import (
 
 const (
 	name    = "gits"
-	version = "0.4.1dev"
+	version = "0.5.0"
 )
 
 // Default values
@@ -142,11 +142,10 @@ func main() {
 	}
 	if opt.listCandidates {
 		validateArgs(0)
-		fmt.Fprintf(os.Stdout, "Candidates:\n[high priority]\n")
+		fmt.Fprintf(os.Stdout, "Candidates:\n")
 		for i, s := range CandidateConfPaths {
 			fmt.Fprintf(os.Stdout, "\t%d. %s\n", i+1, s)
 		}
-		fmt.Fprintln(os.Stdout, "[low priority]")
 		return
 	}
 
